@@ -8,10 +8,7 @@ class LinearRegression(object):
 
     def __init__(self):
         """
-        Initialize the new object (see dummy_methods.py)
-        and set its arguments.
         """
-
     def fit(self, training_data, training_labels):
         """
         Trains the model, returns predicted labels for training data.
@@ -25,12 +22,6 @@ class LinearRegression(object):
         Returns:
             pred_labels (np.array): target of shape (N,)
         """
-        ##
-        ###
-        #### WRITE YOUR CODE HERE!
-        ###
-        ##
-        return pred_labels
 
     def predict(self, test_data):
         """
