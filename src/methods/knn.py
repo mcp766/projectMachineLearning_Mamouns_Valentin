@@ -29,11 +29,13 @@ class KNN(object):
             pred_labels (np.array): labels of shape (N,)
         """
 
-        ##
-        ###
-        #### YOUR CODE HERE!
-        ###
-        ##
+        # KNN is a lazy learning algorithm -> fit simply stores the training samples and their labels.
+        self.training_data = training_data
+        self.training_labels = training_labels
+
+        # Since the training data is now stored, we can directly call predict on it.
+        pred_labels = self.predict(training_data)
+
         return pred_labels
 
     def predict(self, test_data):
