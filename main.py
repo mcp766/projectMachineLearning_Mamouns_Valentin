@@ -17,8 +17,9 @@ def run_one_method(method_name, task_name, args,
                    train_labels_reg, test_labels_reg,
                    train_labels_classif, test_labels_classif,
                    verbose=True):
+                   
     """
-    Initialize, train, evaluate and optionally print results for one method/task pair.
+    Initialize, train, evaluate and print results for one method/task pair.
     Returns a dictionary of results.
     """
 
@@ -142,7 +143,13 @@ def plot_knn(k_values, acc_values, f1_values, mse_values, save_path="knn_vs_k_co
     plt.savefig(save_path)
     plt.close()
 
+
 def print_summary_tables(results_list):
+    """
+    Prints formatted summary tables comparing all methods:
+    shows classification metrics (accuracy, F1) and regression metric (MSE),
+    along with training and prediction runtimes.
+    """
     print("\n==============================")
     print("Classification summary")
     print("==============================")
@@ -296,7 +303,7 @@ def main(args):
 
     
         plot_knn(k_values, acc_values, f1_values, mse_values)
-        
+
         # Restore original K
         args.K = original_k
 
