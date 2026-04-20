@@ -5,8 +5,9 @@ from ..utils import get_n_classes, label_to_onehot, onehot_to_label
 
 class LogisticRegression(object):
     """
-    Logistic regression classifier.
+    Logistic regression classifier. 
     """
+    
 
     def __init__(self, lr, max_iters=500):
         """
@@ -19,6 +20,7 @@ class LogisticRegression(object):
         """
         self.lr = lr
         self.max_iters = max_iters
+        self.weights = None
 
     def fit(self, training_data, training_labels):
         """
@@ -30,11 +32,24 @@ class LogisticRegression(object):
         Returns:
             pred_labels (np.array): target of shape (N,)
         """
-        ##
-        ###
-        #### WRITE YOUR CODE HERE!
-        ###
-        ##
+        N, D = training_data.shape
+        C = get_n_classes(training_labels)
+        Y = label_to_onehot(training_labels)  # (N, C)
+
+        self.weights = np.zeros((D, C))
+
+        for _ in range(self.max_iters):
+            # Softmax
+            logits = training_data @ self.weights   # (N, C)
+            logits -= logits.max(axis=1, keepdims=True)  # stabilité numérique
+            exp = np.exp(logits)
+            P = exp / exp.sum(axis=1, keepdims=True)  # (N, C)
+
+            # Gradient de la cross-entropy
+            grad = training_data.T @ (P - Y) / N   # (D, C)
+            self.weights -= self.lr * grad
+
+        pred_labels = onehot_to_label(P)
         return pred_labels
 
     def predict(self, test_data):
@@ -46,9 +61,9 @@ class LogisticRegression(object):
         Returns:
             pred_labels (np.array): labels of shape (N,)
         """
-        ##
-        ###
-        #### WRITE YOUR CODE HERE!
-        ###
-        ##
+        logits = test_data @ self.weights
+        logits -= logits.max(axis=1, keepdims=True)
+        exp = np.exp(logits)
+        P = exp / exp.sum(axis=1, keepdims=True)
+        pred_labels = onehot_to_label(P)
         return pred_labels
