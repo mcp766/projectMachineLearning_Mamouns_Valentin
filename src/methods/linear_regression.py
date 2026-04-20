@@ -11,6 +11,7 @@ class LinearRegression(object):
         Initialize the new object (see dummy_methods.py)
         and set its arguments.
         """
+        self.w = None
 
     def fit(self, training_data, training_labels):
         """
@@ -25,11 +26,22 @@ class LinearRegression(object):
         Returns:
             pred_labels (np.array): target of shape (N,)
         """
-        ##
-        ###
-        #### WRITE YOUR CODE HERE!
-        ###
-        ##
+        
+        N = training_data.shape[0]
+        ones = np.ones((N, 1))
+        X = np.hstack((ones, training_data))
+
+        y = training_labels 
+
+        
+        XTX = X.T @ X
+        XTy = X.T @ y
+
+        self.w = np.linalg.inv(XTX) @ XTy
+
+        
+        pred_labels = X @ self.w
+
         return pred_labels
 
     def predict(self, test_data):
@@ -41,9 +53,12 @@ class LinearRegression(object):
         Returns:
             pred_labels (np.array): labels of shape (N,)
         """
-        ##
-        ###
-        #### WRITE YOUR CODE HERE!
-        ###
-        ##
+        
+        N = test_data.shape[0]
+        ones = np.ones((N, 1))
+        X = np.hstack((ones, test_data))  
+
+        
+        pred_labels = X @ self.w
+
         return pred_labels
