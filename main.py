@@ -38,6 +38,12 @@ def main(args):
 
     # Make a validation set (it can overwrite xtest, ytest)
     if not args.test:
+        # Shuffle the training set before splitting into train/validation
+        indices = np.random.permutation(len(train_features))
+        train_features = train_features[indices]
+        train_labels_reg = train_labels_reg[indices]
+        train_labels_classif = train_labels_classif[indices]
+
         val_size = int(0.2 * len(train_features))
         test_features = train_features[-val_size:]
         test_labels_reg = train_labels_reg[-val_size:]
@@ -48,10 +54,10 @@ def main(args):
 
     mean = train_features.mean(axis=0)
     std = train_features.std(axis=0)
+    std[std == 0] = 1 # Avoid division by zero for constant features
     train_features = normalize_fn(train_features, mean, std)
     test_features = normalize_fn(test_features, mean, std)
 
-    ### WRITE YOUR CODE HERE to do any other data processing
 
     ## 3. Initialize the method you want to use.
 
@@ -77,8 +83,7 @@ def main(args):
     ## 4. Train and evaluate the method
 
     if args.task == "classification":
-        assert args.method != "linear_regression", f"You should use linear regression as a regression method"
-        # Fit the method on training data
+        assert args.method != "linear_regression", "Linear regression cannot be used for classification"        # Fit the method on training data
         preds_train = method_obj.fit(train_features, train_labels_classif)
 
         # Predict on unseen data
@@ -94,8 +99,7 @@ def main(args):
         print(f"Test set:  accuracy = {acc:.3f}% - F1-score = {macrof1:.6f}")
 
     elif args.task == "regression":
-        assert args.method != "logistic_regression", f"You should use logistic regression as a classification method"
-        # Fit the method on training data
+        assert args.method != "logistic_regression", "Logistic regression cannot be used for regression"        # Fit the method on training data
         preds_train = method_obj.fit(train_features, train_labels_reg)
 
         # Predict on unseen data
@@ -110,9 +114,7 @@ def main(args):
 
     else:
         raise ValueError(f"Unknown task: {args.task}")
-
-    ### WRITE YOUR CODE HERE if you want to add other outputs, visualization, etc.
-
+    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -158,7 +160,6 @@ if __name__ == "__main__":
         help="train on whole training data and evaluate on the test data, "
              "otherwise use a validation set",
     )
-    # Feel free to add more arguments here if you need!
 
     args = parser.parse_args()
     main(args)
