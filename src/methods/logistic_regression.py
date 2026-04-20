@@ -1,7 +1,6 @@
 import numpy as np
 
-from ..utils import get_n_classes, label_to_onehot, onehot_to_label
-
+from ..utils import get_n_classes, label_to_onehot, onehot_to_label, append_bias_term
 
 class LogisticRegression(object):
     """
@@ -32,6 +31,9 @@ class LogisticRegression(object):
         Returns:
             pred_labels (np.array): target of shape (N,)
         """
+
+        training_data = append_bias_term(training_data)
+
         N, D = training_data.shape
         C = get_n_classes(training_labels)
         Y = label_to_onehot(training_labels)
@@ -61,6 +63,9 @@ class LogisticRegression(object):
         Returns:
             pred_labels (np.array): labels of shape (N,)
         """
+
+        test_data = append_bias_term(test_data)
+        
         logits = test_data @ self.weights
         logits -= logits.max(axis=1, keepdims=True)
         exp = np.exp(logits)
