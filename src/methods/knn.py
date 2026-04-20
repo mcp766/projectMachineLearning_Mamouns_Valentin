@@ -64,4 +64,33 @@ class KNN(object):
             nn_labels = self.training_labels[nn_indices]
             nn_distances = distances[nn_indices]
 
+        # Step 4: Prediction depending on task
+
+            #classification 
+            if self.task_kind == "classification":
+
+                # Majority vote (ymv)
+                labels, counts = np.unique(nn_labels, return_counts=True)
+                max_count = np.max(counts)
+
+                # Handle tie cases
+                candidates = labels[counts == max_count]
+
+                if len(candidates) > 1:
+                    # Tie-break: choose the class with smallest average distance (like in class)
+                    avg_distances = []
+                    for c in candidates:
+                        avg_distances.append(np.mean(nn_distances[nn_labels == c]))
+                    pred = candidates[np.argmin(avg_distances)]
+                else:
+                    pred = candidates[0]
+           
+            # regression
+            else:  
+
+                # Weighted average
+                weights = 1 / (nn_distances + 1e-8)
+                pred = np.sum(weights * nn_labels) / np.sum(weights)
+
+            test_labels.append(pred)
         return test_labels
