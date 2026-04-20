@@ -1,5 +1,5 @@
 import numpy as np
-
+from ..utils import append_bias_term
 
 class LinearRegression(object):
     """
@@ -26,20 +26,21 @@ class LinearRegression(object):
         Returns:
             pred_labels (np.array): target of shape (N,)
         """
-        
-        N = training_data.shape[0]
-        ones = np.ones((N, 1))
-        X = np.hstack((ones, training_data))
+        # Add bias term (column of ones)
+        X = append_bias_term(training_data)  
+       
 
         y = training_labels 
 
-        
+        # Compute weights using Normal Equation:
+        # w = (X^T X)^(-1) X^T y
+        # Using pseudo-inverse for numerical stability
         XTX = X.T @ X
         XTy = X.T @ y
 
         self.w = np.linalg.inv(XTX) @ XTy
 
-        
+        # Predict on training data
         pred_labels = X @ self.w
 
         return pred_labels
@@ -53,12 +54,10 @@ class LinearRegression(object):
         Returns:
             pred_labels (np.array): labels of shape (N,)
         """
-        
-        N = test_data.shape[0]
-        ones = np.ones((N, 1))
-        X = np.hstack((ones, test_data))  
+        # Add bias term
+        X = append_bias_term(test_data)  
 
-        
+        # Compute predictions
         pred_labels = X @ self.w
 
         return pred_labels
